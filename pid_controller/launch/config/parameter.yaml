@@ -1,0 +1,5 @@
+/joint_sim/sim:
+   ros__parameters:
+      K: 3
+      T: 4
+      noise: 1
