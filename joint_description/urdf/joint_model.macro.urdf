@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="joint_model" params="prefix">
+
+    <xacro:property name="stator_size" value="0.102"/>
+    <xacro:property name="rotor_height" value="0.01"/>
+    <xacro:property name="rotor_radius" value="0.025"/>
+    <xacro:property name="indicator_length" value="0.025"/>
+    <xacro:property name="indicator_width" value="0.002"/>
+    <xacro:property name="indicator_height" value="0.002"/>
+
+    <link name="${prefix}base_link"/>
+
+    <link name="${prefix}stator_link">
+      <visual>
+        <geometry>
+          <box size="${stator_size} ${stator_size} ${stator_size}"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+    </link>
+
+    <link name="${prefix}rotor_link">
+      <visual>
+        <geometry>
+          <cylinder length="${rotor_height}" radius="${rotor_radius}"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
+      </visual>
+    </link>
+
+    <link name="${prefix}angle_link">
+      <visual>
+        <origin xyz="${indicator_length/2.0} 0 ${(indicator_height + rotor_height)/2.0}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${indicator_length} ${indicator_width} ${indicator_height}"/>
+        </geometry>
+        <material name="white">
+          <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="${prefix}stator_joint" type="fixed">
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}stator_link"/>
+      <origin xyz="0 0 ${stator_size/2.0}" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="${prefix}angle" type="revolute">
+      <parent link="${prefix}stator_link"/>
+      <child link="${prefix}rotor_link"/>
+      <origin xyz="0 0 ${stator_size/2.0}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-3.14" upper="3.14" effort="1.0" velocity="1.0"/>
+    </joint>
+
+    <joint name="${prefix}indicator" type="fixed">
+      <parent link="${prefix}rotor_link"/>
+      <child link="${prefix}angle_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>
